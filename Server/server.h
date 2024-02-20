@@ -1,5 +1,5 @@
-#ifndef SIMPLESERVER_H
-#define SIMPLESERVER_H
+#ifndef SERVER_H
+#define SERVER_H
 
 #include <QObject>
 
@@ -15,16 +15,17 @@
 
 class Server: public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-  Server(QObject * parent = 0);
-  ~Server();
+    Server(QObject * parent = 0);
+    ~Server();
 
 public slots:
-  void acceptConnection();
-  void startRead();
+    void acceptConnection();
+    void startRead();
 private:
-  QTcpServer *server;
-  QTcpSocket* client;
+    QTcpServer *server;
+    QTcpSocket* client;
 };
-#endif // SIMPLESERVER_H
+
+#endif // SERVER_H
