@@ -1,9 +1,10 @@
 #include "server.h"
 #include <QDateTime>
 
-Server::Server(QObject* parent): QObject(parent)
+Server::Server(QObject *parent)
+    : QObject{parent}
 {
-    client=NULL;
+    socket=NULL;
     server=new QTcpServer;
 
     connect(server, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
@@ -13,16 +14,16 @@ Server::Server(QObject* parent): QObject(parent)
 Server::~Server()
 {
     server->close();
-    if(client != NULL)
-        client->close();
+    if(socket != NULL)
+        socket->close();
     server->deleteLater();
 }
 
 void Server::acceptConnection()
 {
     //Verbindung annehmen
-    client = server->nextPendingConnection();
-    connect(client, SIGNAL(readyRead()), this, SLOT(startRead()));
+    socket = server->nextPendingConnection();
+    connect(socket, SIGNAL(readyRead()), this, SLOT(startRead()));
 }
 
 void Server::startRead(){

@@ -1,20 +1,24 @@
 #include "client.h"
+#include "qhostaddress.h"
 
-Client::Client( QObject* parent ): QObject( parent ){
-    client=new QTcpSocket;
-    connect( client, SIGNAL( connected() ), this, SLOT( startTransfer() ) );
-    connect(client, SIGNAL(readyRead()), this, SLOT(startRead()));
+Client::Client(QObject *parent)
+    : QObject{parent}
+{
+
+    socket=new QTcpSocket;
+    connect( socket, SIGNAL( connected() ), this, SLOT( startTransfer() ) );
+    connect(socket, SIGNAL(readyRead()), this, SLOT(startRead()));
 }
 
 Client::~Client(){
-    client->close();
-    client->deleteLater();
+    socket->close();
+    socket->deleteLater();
 }
 
 void Client::start( QString address, quint16 port )
 {
     QHostAddress addr( address );
-    client->connectToHost( addr, port );
+    socket->connectToHost( addr, port );
 }
 
 void Client::startTransfer(){
@@ -22,7 +26,7 @@ void Client::startTransfer(){
     QByteArray ba = str.toLocal8Bit();
     const char *c_str = ba.data();
 
-    client->write( c_str, str.length()+1 );
+    socket->write( c_str, str.length()+1 );
 }
 
 
