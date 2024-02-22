@@ -8,10 +8,12 @@ class SHARED_EXPORT UnoCardBase : public QObject
 {
     Q_OBJECT
 public:
-    explicit UnoCardBase(QObject *parent = nullptr);
+    explicit UnoCardBase(const int id, const QString color, QObject *parent = nullptr);
+    int getId() const;
+    QString getColor() const;
 protected:
-    int id;
-    QString color;
+    const int id;
+    const QString color;
 
 signals:
 };

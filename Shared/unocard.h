@@ -7,9 +7,10 @@
 class SHARED_EXPORT UnoCard : public UnoCardBase
 {
 public:
-    explicit UnoCard(QObject *parent = nullptr);
+    explicit UnoCard(const int id, const QString color, const int value, QObject *parent = nullptr);
+    int getValue() const;
 private:
-    int value;
+    const int value;
 };
 
 #endif // UNOCARD_H

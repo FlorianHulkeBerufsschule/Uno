@@ -8,10 +8,10 @@
 class SHARED_EXPORT UnoSpecialCard : public UnoCardBase
 {
 public:
-    explicit UnoSpecialCard(QObject *parent = nullptr);
-    void setType(UnoSpecialCardType type);
+    explicit UnoSpecialCard(const int id, const QString color, const UnoSpecialCardType type, QObject *parent = nullptr);
+    UnoSpecialCardType getType() const;
 private:
-    UnoSpecialCardType type;
+    const UnoSpecialCardType type;
 };
 
 #endif // UNOSPECIALCARD_H
