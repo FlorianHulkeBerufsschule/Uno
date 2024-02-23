@@ -2,11 +2,6 @@
 #define SERVER_H
 
 #include <QObject>
-#include <QTcpServer>
-#include <QTcpSocket>
-
-
-#define MAXCLIENT 2
 
 class Server : public QObject
 {
@@ -16,12 +11,8 @@ public:
     ~Server();
 
 public slots:
-    void acceptConnection();
-    void startRead();
 
 private:
-    QTcpServer *server;
-    QTcpSocket *socket;
 
 signals:
 

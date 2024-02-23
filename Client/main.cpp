@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
     w.show();
 
     Client client;
-    client.start("127.0.0.1",8888);
 
     return a.exec();
 }
