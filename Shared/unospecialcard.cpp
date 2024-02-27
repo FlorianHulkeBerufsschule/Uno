@@ -1,11 +1,12 @@
 #include "unospecialcard.h"
 #include <QJsonObject>
+#include <QJsonDocument>
 
 UnoSpecialCard::UnoSpecialCard(const int id, const QString color, const Type type, QObject *parent)
     : UnoCardBase{id, color, parent}, type(type)
 {}
 
-UnoSpecialCard *UnoSpecialCard::fromJson(QJsonObject &json) {
+UnoSpecialCard *UnoSpecialCard::fromJsonObj(QJsonObject &json) {
     int id;
     QString color;
     Type type;
@@ -25,7 +26,19 @@ UnoSpecialCard *UnoSpecialCard::fromJson(QJsonObject &json) {
     return new UnoSpecialCard(id, color, type);
 }
 
-void UnoSpecialCard::toJson(QJsonObject &json) const
+UnoSpecialCard *UnoSpecialCard::fromJsonDoc(QJsonDocument &document)
+{
+    QJsonObject obj = document.object();
+    return fromJsonObj(obj);
+}
+
+UnoSpecialCard *UnoSpecialCard::fromJsonStr(QString string)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(string.toUtf8());
+    return fromJsonDoc(doc);
+}
+
+void UnoSpecialCard::toJsonObj(QJsonObject &json) const
 {
     json["id"] = this->id;
     json["color"] = this->color;

@@ -18,8 +18,10 @@ public:
     Q_ENUM(Type);
 
     explicit UnoSpecialCard(const int id, const QString color, const Type type, QObject *parent = nullptr);
-    static UnoSpecialCard* fromJson(QJsonObject &json);
-    void toJson(QJsonObject &json) const;
+    static UnoSpecialCard* fromJsonObj(QJsonObject &json);
+    static UnoSpecialCard* fromJsonDoc(QJsonDocument &document);
+    static UnoSpecialCard* fromJsonStr(QString string);
+    void toJsonObj(QJsonObject &json) const;
     Type getType() const;
 
 private:
