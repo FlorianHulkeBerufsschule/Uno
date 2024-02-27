@@ -39,7 +39,7 @@ void Server::onNewConnection()
 void Server::processTextMessage(QString message)
 {
     QJsonObject cardJson;
-    (new UnoSpecialCard(1, "balck", UnoSpecialCardType::DrawFour))->toJson(cardJson);
+    (new UnoSpecialCard(1, "balck", UnoSpecialCard::Wildcard))->toJson(cardJson);
     QJsonDocument doc(cardJson);
     const auto json =  doc.toJson(QJsonDocument::Compact);
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
@@ -47,7 +47,6 @@ void Server::processTextMessage(QString message)
         qDebug() << "Message received:" << message;
         qDebug() << "Sending JSON:" << json;
     if (pClient) {
-        // pClient->sendTextMessage(message);
         pClient->sendTextMessage(json);
     }
 }
