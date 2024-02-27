@@ -2,6 +2,8 @@
 #include "client.h"
 
 #include <QApplication>
+#include <QtCore/QCommandLineParser>
+#include <QtCore/QCommandLineOption>
 
 int main(int argc, char *argv[])
 {
@@ -9,8 +11,18 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    Client client;
-    client.start("127.0.0.1",8888);
+    QCommandLineParser parser;
+    parser.setApplicationDescription("QtWebSockets example: echoclient");
+    parser.addHelpOption();
+
+    QCommandLineOption dbgOption(QStringList() << "d" << "debug",
+                                 QCoreApplication::translate("main", "Debug output [default: off]."));
+    parser.addOption(dbgOption);
+    parser.process(a);
+    bool debug = parser.isSet(dbgOption);
+
+    Client client(QUrl(QStringLiteral("ws://localhost:8888")), debug);
+    QObject::connect(&client, &Client::closed, &a, &QCoreApplication::quit);
 
     return a.exec();
 }

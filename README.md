@@ -1,14 +1,13 @@
 # Uno
 
-## simpleServer
+## Client
 
-Sehr einfacher Server, der auf PORT 8888 hört und bei einer GET-Anfrage mit Hallo und Datums- und Zeitangabe antwortet.
+Das Frontend, das sich um zu spielen auf das Backend als verbindet. Nutzt standardmäßig ws://localhost:8888 als Addresse.
 
-## simpleClient
+## Server
 
-Sehr einfacher Client, der auf IP-Adresse 127.0.0.1 mit PORT 8888 eine einfache GET-Anfrage sendet und die Antwort als Debug-Information ausgibt.
+Das Backend mit der gesamten Spiellogik. Hostet einen Websocket, auf den sich die Clients verbinden können.
 
-In main.cpp wurde ein server und ein client erzeugt und gestartet.
-Die oben beschriebenen Anfragen werden genau einmal ausgeführt.
+## Shared
 
-Das Programm dient nur dazu, zu zeigen, wie die Verbindung aufgebaut werden kann.
+Enthälte geteilte Klassen, die sowohl vom Front-, als auch Backend genutzt werden. Beispielsweiße die Unokarten inklusive der JSON funktionalität.

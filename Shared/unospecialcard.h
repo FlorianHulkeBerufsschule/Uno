@@ -2,16 +2,30 @@
 #define UNOSPECIALCARD_H
 
 #include "unocardbase.h"
-#include "unospecialcardtype.h"
 #include "Shared_global.h"
 
 class SHARED_EXPORT UnoSpecialCard : public UnoCardBase
 {
 public:
-    explicit UnoSpecialCard(const int id, const QString color, const UnoSpecialCardType type, QObject *parent = nullptr);
-    UnoSpecialCardType getType() const;
+    enum Type
+    {
+        DrawFour,
+        DrawTwo,
+        Wildcard,
+        Reverse,
+        Skip
+    };
+    Q_ENUM(Type);
+
+    explicit UnoSpecialCard(const int id, const QString color, const Type type, QObject *parent = nullptr);
+    static UnoSpecialCard* fromJsonObj(QJsonObject &json);
+    static UnoSpecialCard* fromJsonDoc(QJsonDocument &document);
+    static UnoSpecialCard* fromJsonStr(QString string);
+    void toJsonObj(QJsonObject &json) const;
+    Type getType() const;
+
 private:
-    const UnoSpecialCardType type;
+    const Type type;
 };
 
 #endif // UNOSPECIALCARD_H

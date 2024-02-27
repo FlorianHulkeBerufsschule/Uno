@@ -2,22 +2,25 @@
 #define CLIENT_H
 
 #include <QObject>
-#include <QTcpSocket>
+#include <QtWebSockets/QWebSocket>
 
 class Client : public QObject
 {
     Q_OBJECT
 public:
-    explicit Client(QObject *parent = nullptr);
-    ~Client();
-    void start( QString address, quint16 port );
-public slots:
-    void startTransfer();
-    void startRead();
-private:
-    QTcpSocket *socket;
+    explicit Client(const QUrl &url, bool debug = false, QObject *parent = nullptr);
 
-signals:
+Q_SIGNALS:
+    void closed();
+
+private Q_SLOTS:
+    void onConnected();
+    void onTextMessageReceived(QString message);
+
+private:
+    QWebSocket m_webSocket;
+    QUrl m_url;
+    bool m_debug;
 };
 
 #endif // CLIENT_H

@@ -2,28 +2,30 @@
 #define SERVER_H
 
 #include <QObject>
-#include <QTcpServer>
-#include <QTcpSocket>
+#include <QList>
 
-
-#define MAXCLIENT 2
+QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
+QT_FORWARD_DECLARE_CLASS(QWebSocket)
 
 class Server : public QObject
 {
     Q_OBJECT
 public:
-    explicit Server(QObject *parent = nullptr);
+    explicit Server(quint16 port, bool debug = false, QObject *parent = nullptr);
     ~Server();
 
-public slots:
-    void acceptConnection();
-    void startRead();
+Q_SIGNALS:
+    void closed();
+
+private Q_SLOTS:
+    void onNewConnection();
+    void processTextMessage(QString message);
+    void socketDisconnected();
 
 private:
-    QTcpServer *server;
-    QTcpSocket *socket;
-
-signals:
+    QWebSocketServer *m_pWebSocketServer;
+    QList<QWebSocket *> m_clients;
+    bool m_debug;
 
 };
 

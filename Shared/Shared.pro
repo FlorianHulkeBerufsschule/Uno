@@ -18,8 +18,7 @@ HEADERS += \
     Shared_global.h \
     unocard.h \
     unocardbase.h \
-    unospecialcard.h \
-    unospecialcardtype.h
+    unospecialcard.h
 
 # Default rules for deployment.
 unix {

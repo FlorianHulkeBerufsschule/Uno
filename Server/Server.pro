@@ -1,4 +1,4 @@
-QT = core network
+QT = core websockets
 
 CONFIG += c++17 cmdline
 

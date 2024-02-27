@@ -1,57 +1,65 @@
 #include "server.h"
-#include <QDateTime>
+#include "QtWebSockets/qwebsocketserver.h"
+#include "QtWebSockets/qwebsocket.h"
+#include "unocard.h"
+#include "unospecialcard.h"
+#include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
 
-Server::Server(QObject *parent)
-    : QObject{parent}
+Server::Server(quint16 port, bool debug, QObject *parent)
+    : QObject{parent},
+    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Echo Server"), QWebSocketServer::NonSecureMode, this)),
+    m_debug(debug)
 {
-    socket=NULL;
-    server=new QTcpServer;
-
-    connect(server, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
-    server->listen(QHostAddress::Any, 8888);
+    if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
+        if (m_debug)
+            qDebug() << "Echoserver listening on port" << port;
+        connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
+                this, &Server::onNewConnection);
+        connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &Server::closed);
+    }
 }
 
 Server::~Server()
 {
-    server->close();
-    if(socket != NULL)
-        socket->close();
-    server->deleteLater();
+    m_pWebSocketServer->close();
+    qDeleteAll(m_clients.begin(), m_clients.end());
 }
 
-void Server::acceptConnection()
+void Server::onNewConnection()
 {
-    //Verbindung annehmen
-    socket = server->nextPendingConnection();
-    connect(socket, SIGNAL(readyRead()), this, SLOT(startRead()));
+    QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
+
+    connect(pSocket, &QWebSocket::textMessageReceived, this, &Server::processTextMessage);
+    connect(pSocket, &QWebSocket::disconnected, this, &Server::socketDisconnected);
+
+    m_clients << pSocket;
 }
 
-void Server::startRead(){
+void Server::processTextMessage(QString message)
+{
+    const UnoCard *card = new UnoCard(1, "black", 7);
+    const QString jsonStr = card->toJsonStr();
+    const UnoCard *parsed = UnoCard::fromJsonStr(jsonStr);
+    qDebug() << "Parsed card:" << parsed->toJsonStr();
 
-    // Dieser Slot wird aufgerufen, sobald der Client Daten an den Server sendet
-    // Der Server überprüft, ob es sich um einen GET-Request handelt und sendet ein sehr
-    // einfaches HTML-Dokument zurück
+    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    if (m_debug)
+        qDebug() << "Message received:" << message;
+        qDebug() << "Sending JSON:" << jsonStr;
+    if (pClient) {
+        pClient->sendTextMessage(jsonStr);
+    }
+}
 
-    QTcpSocket *socket = (QTcpSocket* ) QObject::sender();
-
-    if ( socket->canReadLine() )
-    {
-        QStringList tokens = QString( socket->readLine() ).split( QRegExp( "[ \r\n][ \r\n]*" ) );
-        if ( tokens[0] == "GET" )
-        {
-            QTextStream os( socket );
-            os.setAutoDetectUnicode( true );
-            os << "HTTP/1.0 200 Ok\r\n"
-                  "Content-Type: text/html; charset=\"utf-8\"\r\n"
-                  "\r\n"
-                  "<h1>Hallo!</h1>\n"
-               << QDateTime::currentDateTime().toString() << "\n";
-            socket->close();
-
-            if ( socket->state() == QTcpSocket::UnconnectedState )
-            {
-                delete socket;
-            }
-        }
+void Server::socketDisconnected()
+{
+    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    if (m_debug)
+        qDebug() << "socketDisconnected:" << pClient;
+    if (pClient) {
+        m_clients.removeAll(pClient);
+        pClient->deleteLater();
     }
 }
