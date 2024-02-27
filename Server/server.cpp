@@ -1,7 +1,10 @@
 #include "server.h"
 #include "QtWebSockets/qwebsocketserver.h"
 #include "QtWebSockets/qwebsocket.h"
+#include "unospecialcard.h"
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 Server::Server(quint16 port, bool debug, QObject *parent)
     : QObject{parent},
@@ -35,11 +38,17 @@ void Server::onNewConnection()
 
 void Server::processTextMessage(QString message)
 {
+    QJsonObject cardJson;
+    (new UnoSpecialCard(1, "balck", UnoSpecialCardType::DrawFour))->toJson(cardJson);
+    QJsonDocument doc(cardJson);
+    const auto json =  doc.toJson(QJsonDocument::Compact);
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (m_debug)
         qDebug() << "Message received:" << message;
+        qDebug() << "Sending JSON:" << json;
     if (pClient) {
-        pClient->sendTextMessage(message);
+        // pClient->sendTextMessage(message);
+        pClient->sendTextMessage(json);
     }
 }
 

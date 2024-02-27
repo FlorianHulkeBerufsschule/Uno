@@ -10,6 +10,7 @@ class SHARED_EXPORT UnoSpecialCard : public UnoCardBase
 public:
     explicit UnoSpecialCard(const int id, const QString color, const UnoSpecialCardType type, QObject *parent = nullptr);
     UnoSpecialCardType getType() const;
+    void toJson(QJsonObject &json) const;
 private:
     const UnoSpecialCardType type;
 };
