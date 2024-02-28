@@ -13,6 +13,9 @@ public:
     virtual void toJsonObj(QJsonObject &json) const = 0;
     QJsonDocument toJsonDoc() const;
     QString toJsonStr() const;
+    static UnoCardBase* fromJsonObj(QJsonObject object);
+    static UnoCardBase* fromJsonDoc(QJsonDocument document);
+    static UnoCardBase* fromJsonStr(QString string);
     // getter
     int getId() const;
     QString getColor() const;

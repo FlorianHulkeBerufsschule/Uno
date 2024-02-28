@@ -6,36 +6,34 @@ UnoSpecialCard::UnoSpecialCard(const int id, const QString color, const Type typ
     : UnoCardBase{id, color, parent}, type(type)
 {}
 
-UnoSpecialCard *UnoSpecialCard::fromJsonObj(QJsonObject &json) {
+UnoSpecialCard *UnoSpecialCard::fromJsonObj(QJsonObject object) {
     int id;
     QString color;
     Type type;
 
-    if (json.contains("id") && json["id"].isDouble())
-        id = json["id"].toInt();
+    if (object.contains("id") && object["id"].isDouble())
+        id = object["id"].toInt();
     else throw "JSON object doesn't contain 'id'";
 
-    if (json.contains("color") && json["color"].isString())
-        color = json["color"].toString();
+    if (object.contains("color") && object["color"].isString())
+        color = object["color"].toString();
     else throw "JSON object doesn't contain 'color'";
 
-    if (json.contains("type") && json["type"].isDouble())
-        type = static_cast<UnoSpecialCard::Type>(json["type"].toInt());
+    if (object.contains("type") && object["type"].isDouble())
+        type = static_cast<UnoSpecialCard::Type>(object["type"].toInt());
     else throw "JSON object doesn't contain 'type'";
 
     return new UnoSpecialCard(id, color, type);
 }
 
-UnoSpecialCard *UnoSpecialCard::fromJsonDoc(QJsonDocument &document)
+UnoSpecialCard *UnoSpecialCard::fromJsonDoc(QJsonDocument document)
 {
-    QJsonObject obj = document.object();
-    return fromJsonObj(obj);
+    return fromJsonObj(document.object());
 }
 
 UnoSpecialCard *UnoSpecialCard::fromJsonStr(QString string)
 {
-    QJsonDocument doc = QJsonDocument::fromJson(string.toUtf8());
-    return fromJsonDoc(doc);
+    return fromJsonDoc(QJsonDocument::fromJson(string.toUtf8()));
 }
 
 void UnoSpecialCard::toJsonObj(QJsonObject &json) const

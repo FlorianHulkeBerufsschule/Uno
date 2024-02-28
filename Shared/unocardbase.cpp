@@ -1,4 +1,6 @@
+#include "unocard.h"
 #include "unocardbase.h"
+#include "unospecialcard.h"
 #include <QJsonObject>
 #include <QJsonDocument>
 
@@ -27,4 +29,25 @@ int UnoCardBase::getId() const
 QString UnoCardBase::getColor() const
 {
     return this->color;
+}
+
+UnoCardBase *UnoCardBase::fromJsonObj(QJsonObject object)
+{
+    if (object.contains("value"))
+    {
+        return UnoCard::fromJsonObj(object);
+    }
+    return UnoSpecialCard::fromJsonObj(object);
+}
+
+UnoCardBase *UnoCardBase::fromJsonDoc(QJsonDocument document)
+{
+    QJsonObject obj = document.object();
+    return fromJsonObj(obj);
+}
+
+UnoCardBase *UnoCardBase::fromJsonStr(QString string)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(string.toUtf8());
+    return fromJsonDoc(doc);
 }
