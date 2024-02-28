@@ -18,6 +18,7 @@ HEADERS += \
     mainwindow.h
 
 FORMS += \
+    StartScreen.ui \
     mainwindow.ui
 
 # Default rules for deployment.
