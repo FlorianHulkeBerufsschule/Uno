@@ -10,11 +10,13 @@ SOURCES += \
     gamefield.cpp \
     main.cpp \
     player.cpp \
+    queueentry.cpp \
     server.cpp
 
 HEADERS += \
     gamefield.h \
     player.h \
+    queueentry.h \
     server.h
 
 # Default rules for deployment.

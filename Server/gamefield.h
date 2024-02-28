@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include "queueentry.h"
 #include "unocardbase.h"
 #include "player.h"
 
@@ -10,10 +11,10 @@ class Gamefield : public QObject
 {
     Q_OBJECT
 public:
-    explicit Gamefield(QList<QWebSocket *> clients, QObject *parent = nullptr);
+    explicit Gamefield(QList<QueueEntry *> queue, QObject *parent = nullptr);
 private:
     void initDrawStack();
-    void initPlayers(QList<QWebSocket *> clients);
+    void initPlayers(QList<QueueEntry *> clients);
 
     QList<UnoCardBase*> m_drawStack;
     UnoCardBase* m_lastPlayedCard;

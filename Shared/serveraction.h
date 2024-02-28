@@ -3,7 +3,9 @@
 
 enum class ServerAction
 {
-    StartGame
+    Invalid = 0,
+    JoinQueue,
+    StartGame,
 };
 
 #endif // SERVERACTION_H

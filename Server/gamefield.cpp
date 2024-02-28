@@ -4,11 +4,11 @@
 #include "unospecialcard.h"
 #include <QMetaEnum>
 
-Gamefield::Gamefield(QList<QWebSocket *> clients, QObject *parent)
+Gamefield::Gamefield(QList<QueueEntry *> queue, QObject *parent)
     : QObject{parent}
 {
     initDrawStack();
-    initPlayers(clients);
+    initPlayers(queue);
 }
 
 void Gamefield::initDrawStack()
@@ -54,11 +54,11 @@ void Gamefield::initDrawStack()
     qDebug() << "Initialized" << m_drawStack.length() << "game cards";
 }
 
-void Gamefield::initPlayers(QList<QWebSocket *> clients)
+void Gamefield::initPlayers(QList<QueueEntry *> queue)
 {
-    for (QWebSocket *client : clients)
+    for (QueueEntry *entry : queue)
     {
-        m_players.append(new Player(client));
+        m_players.append(new Player(entry->getClient()));
     }
 
     qDebug() << "Starting game with" << m_players.length() << "players";
