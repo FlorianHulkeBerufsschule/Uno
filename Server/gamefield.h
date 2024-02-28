@@ -11,7 +11,7 @@ class Gamefield : public QObject
 {
     Q_OBJECT
 public:
-    explicit Gamefield(QList<QueueEntry *> queue, QObject *parent = nullptr);
+    explicit Gamefield(QList<QueueEntry *> queue, bool debug = false, QObject *parent = nullptr);
 private:
     void initDrawStack();
     void initPlayers(QList<QueueEntry *> clients);
@@ -20,6 +20,7 @@ private:
     UnoCardBase* m_lastPlayedCard;
     QList<Player *> m_players;
     bool m_isClockwise = true;
+    bool m_debug;
 
 signals:
 };

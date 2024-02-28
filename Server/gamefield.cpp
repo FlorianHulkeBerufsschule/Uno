@@ -4,8 +4,8 @@
 #include "unospecialcard.h"
 #include <QMetaEnum>
 
-Gamefield::Gamefield(QList<QueueEntry *> queue, QObject *parent)
-    : QObject{parent}
+Gamefield::Gamefield(QList<QueueEntry *> queue, bool debug, QObject *parent)
+    : QObject{parent}, m_debug(debug)
 {
     initDrawStack();
     initPlayers(queue);
@@ -51,7 +51,8 @@ void Gamefield::initDrawStack()
         }
     }
 
-    qDebug() << "Initialized" << m_drawStack.length() << "game cards";
+    if (m_debug)
+        qDebug() << "Initialized" << m_drawStack.length() << "game cards";
 }
 
 void Gamefield::initPlayers(QList<QueueEntry *> queue)
@@ -61,5 +62,6 @@ void Gamefield::initPlayers(QList<QueueEntry *> queue)
         m_players.append(new Player(entry->getClient()));
     }
 
-    qDebug() << "Starting game with" << m_players.length() << "players";
+    if (m_debug)
+        qDebug() << "Starting game with" << m_players.length() << "players";
 }
