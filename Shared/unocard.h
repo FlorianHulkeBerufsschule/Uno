@@ -11,10 +11,10 @@ public:
     static UnoCard* fromJsonObj(QJsonObject object);
     static UnoCard* fromJsonDoc(QJsonDocument document);
     static UnoCard* fromJsonStr(QString str);
-    void toJsonObj(QJsonObject &json) const;
+    QJsonObject toJsonObj() const;
     int getValue() const;
 private:
-    const int value;
+    const int m_value;
 };
 
 #endif // UNOCARD_H

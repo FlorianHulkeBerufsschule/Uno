@@ -3,7 +3,7 @@
 #include <QJsonDocument>
 
 UnoSpecialCard::UnoSpecialCard(const int id, const QString color, const Type type, QObject *parent)
-    : UnoCardBase{id, color, parent}, type(type)
+    : UnoCardBase{id, color, parent}, m_type(type)
 {}
 
 UnoSpecialCard *UnoSpecialCard::fromJsonObj(QJsonObject object) {
@@ -36,14 +36,16 @@ UnoSpecialCard *UnoSpecialCard::fromJsonStr(QString string)
     return fromJsonDoc(QJsonDocument::fromJson(string.toUtf8()));
 }
 
-void UnoSpecialCard::toJsonObj(QJsonObject &json) const
+QJsonObject UnoSpecialCard::toJsonObj() const
 {
-    json["id"] = this->id;
-    json["color"] = this->color;
-    json["type"] = this->type;
+    QJsonObject json;
+    json["id"] = m_id;
+    json["color"] = m_color;
+    json["type"] = m_type;
+    return json;
 }
 
 UnoSpecialCard::Type UnoSpecialCard::getType() const
 {
-    return this->type;
+    return m_type;
 }

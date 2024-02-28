@@ -21,11 +21,11 @@ public:
     static UnoSpecialCard* fromJsonObj(QJsonObject object);
     static UnoSpecialCard* fromJsonDoc(QJsonDocument document);
     static UnoSpecialCard* fromJsonStr(QString string);
-    void toJsonObj(QJsonObject &json) const;
+    QJsonObject toJsonObj() const;
     Type getType() const;
 
 private:
-    const Type type;
+    const Type m_type;
 };
 
 #endif // UNOSPECIALCARD_H

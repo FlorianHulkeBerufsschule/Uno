@@ -5,31 +5,8 @@
 #include <QJsonDocument>
 
 UnoCardBase::UnoCardBase(const int id, const QString color, QObject *parent)
-    : QObject{parent}, id(id), color(color)
+    : QObject{parent}, m_id(id), m_color(color)
 {}
-
-QJsonDocument UnoCardBase::toJsonDoc() const
-{
-    QJsonObject json;
-    this->toJsonObj(json);
-
-    return *new QJsonDocument(json);
-}
-
-QString UnoCardBase::toJsonStr() const
-{
-    return this->toJsonDoc().toJson(QJsonDocument::Compact);
-}
-
-int UnoCardBase::getId() const
-{
-    return this->id;
-}
-
-QString UnoCardBase::getColor() const
-{
-    return this->color;
-}
 
 UnoCardBase *UnoCardBase::fromJsonObj(QJsonObject object)
 {
@@ -42,12 +19,30 @@ UnoCardBase *UnoCardBase::fromJsonObj(QJsonObject object)
 
 UnoCardBase *UnoCardBase::fromJsonDoc(QJsonDocument document)
 {
-    QJsonObject obj = document.object();
-    return fromJsonObj(obj);
+    return fromJsonObj(document.object());
 }
 
 UnoCardBase *UnoCardBase::fromJsonStr(QString string)
 {
-    QJsonDocument doc = QJsonDocument::fromJson(string.toUtf8());
-    return fromJsonDoc(doc);
+    return fromJsonDoc(QJsonDocument::fromJson(string.toUtf8()));
+}
+
+QJsonDocument UnoCardBase::toJsonDoc() const
+{
+    return QJsonDocument(toJsonObj());
+}
+
+QString UnoCardBase::toJsonStr() const
+{
+    return toJsonDoc().toJson(QJsonDocument::Compact);
+}
+
+int UnoCardBase::getId() const
+{
+    return m_id;
+}
+
+QString UnoCardBase::getColor() const
+{
+    return m_color;
 }
