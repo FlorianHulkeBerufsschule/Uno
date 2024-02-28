@@ -1,6 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "gamefield.h"
 #include <QObject>
 #include <QList>
 
@@ -23,8 +24,11 @@ private Q_SLOTS:
     void socketDisconnected();
 
 private:
+    void startGame();
+
     QWebSocketServer *m_pWebSocketServer;
     QList<QWebSocket *> m_clients;
+    Gamefield *m_gamefield;
     bool m_debug;
 
 };

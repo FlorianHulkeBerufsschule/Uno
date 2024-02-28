@@ -4,14 +4,21 @@
 #include <QObject>
 #include <QList>
 #include "unocardbase.h"
+#include "player.h"
 
 class Gamefield : public QObject
 {
     Q_OBJECT
 public:
-    explicit Gamefield(QObject *parent = nullptr);
+    explicit Gamefield(QList<QWebSocket *> clients, QObject *parent = nullptr);
 private:
-    QList<UnoCardBase*> drawStack;
+    void initDrawStack();
+    void initPlayers(QList<QWebSocket *> clients);
+
+    QList<UnoCardBase*> m_drawStack;
+    UnoCardBase* m_lastPlayedCard;
+    QList<Player *> m_players;
+    bool m_isClockwise = true;
 
 signals:
 };

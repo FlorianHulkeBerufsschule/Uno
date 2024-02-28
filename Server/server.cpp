@@ -1,8 +1,7 @@
 #include "server.h"
 #include "QtWebSockets/qwebsocketserver.h"
 #include "QtWebSockets/qwebsocket.h"
-#include "unocard.h"
-#include "unospecialcard.h"
+#include "serveraction.h"
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -39,18 +38,29 @@ void Server::onNewConnection()
 
 void Server::processTextMessage(QString message)
 {
-    const UnoCard *card = new UnoCard(1, "black", 7);
-    const QString jsonStr = card->toJsonStr();
-    const UnoCard *parsed = UnoCard::fromJsonStr(jsonStr);
-    qDebug() << "Parsed card:" << parsed->toJsonStr();
+    const QStringList params = message.split(';');
+    const ServerAction action = static_cast<ServerAction>(params[0].toInt());
+    const QString payloadStr = params.length() == 2 ? params[1] : "";
+    const QJsonObject payload = QJsonDocument::fromJson(payloadStr.toUtf8()).object();
 
-    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    if (m_debug)
-        qDebug() << "Message received:" << message;
-        qDebug() << "Sending JSON:" << jsonStr;
-    if (pClient) {
-        pClient->sendTextMessage(jsonStr);
+    switch (action) {
+    case ServerAction::StartGame:
+        startGame();
+        break;
     }
+
+    // const UnoCard *card = new UnoCard(1, "black", 7);
+    // const QString jsonStr = card->toJsonStr();
+    // const UnoCard *parsed = UnoCard::fromJsonStr(jsonStr);
+    // qDebug() << "Parsed card:" << parsed->toJsonStr();
+
+    // QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    // if (m_debug)
+    //     qDebug() << "Message received:" << message;
+    //     qDebug() << "Sending JSON:" << jsonStr;
+    // if (pClient) {
+    //     pClient->sendTextMessage(jsonStr);
+    // }
 }
 
 void Server::socketDisconnected()
@@ -62,4 +72,9 @@ void Server::socketDisconnected()
         m_clients.removeAll(pClient);
         pClient->deleteLater();
     }
+}
+
+void Server::startGame()
+{
+    this->m_gamefield = new Gamefield(m_clients);
 }

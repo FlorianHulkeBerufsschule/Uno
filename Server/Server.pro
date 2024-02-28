@@ -9,10 +9,12 @@ CONFIG += c++17 cmdline
 SOURCES += \
     gamefield.cpp \
     main.cpp \
+    player.cpp \
     server.cpp
 
 HEADERS += \
     gamefield.h \
+    player.h \
     server.h
 
 # Default rules for deployment.
