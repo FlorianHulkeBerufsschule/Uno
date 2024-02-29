@@ -11,6 +11,8 @@
 
 #define DISPLAY_ERROR QString::number(static_cast<int>(ClientAction::DisplayError))
 #define UPDATE_QUEUE QString::number(static_cast<int>(ClientAction::UpdateQueue))
+#define PLAY_CARD QString::number(static_cast<int>(ClientAction::PlayCard))
+#define DRAW_CARD QString::number(static_cast<int>(ClientAction::DrawCard))
 
 Server::Server(quint16 port, bool debug, QObject *parent)
     : QObject{parent},
@@ -63,6 +65,11 @@ void Server::processTextMessage(QString message)
         break;
     case ServerAction::StartGame:
         startGame();
+        break;
+    case ServerAction::PlayCard:
+        break;
+    case ServerAction::DrawCard:
+        m_gamefield->drawRandomCard(client);
         break;
     default:
         Helper::displayError(client, "Parsed invalid ServerAction: " + QString::number(static_cast<int>(action)));
