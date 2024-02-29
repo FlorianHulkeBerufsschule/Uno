@@ -1,12 +1,16 @@
 #include "gamefield.h"
+#include "clientaction.h"
 #include "helper.h"
 #include "player.h"
 #include "unocard.h"
 #include "unospecialcard.h"
 #include <QMetaEnum>
 #include <QRandomGenerator>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
-#define DISPLAY_ERROR QString::number(static_cast<int>(ClientAction::DisplayError))
+#define UPDATE_GAMEFIELD QString::number(static_cast<int>(ClientAction::UpdateGamefield))
 
 Gamefield::Gamefield(QList<QueueEntry *> queue, bool debug, QObject *parent)
     : QObject{parent}, m_debug(debug)
@@ -14,6 +18,8 @@ Gamefield::Gamefield(QList<QueueEntry *> queue, bool debug, QObject *parent)
     initDrawStack();
     initPlayers(queue);
     initPlayerCards();
+    initGamefield();
+    updatePlayersGamefields();
 }
 
 void Gamefield::initDrawStack()
@@ -62,9 +68,10 @@ void Gamefield::initDrawStack()
 
 void Gamefield::initPlayers(QList<QueueEntry *> queue)
 {
+    int id = 1;
     for (QueueEntry *entry : queue)
     {
-        m_players.append(new Player(entry->getClient()));
+        m_players.append(new Player(entry->getClient(), id++, entry->getName()));
     }
 
     if (m_debug)
@@ -83,6 +90,20 @@ void Gamefield::initPlayerCards()
 
     if(m_debug)
         qDebug() << m_drawStack.size() << "cards left on the drawstack";
+}
+
+void Gamefield::initGamefield(){
+    // Lege eine zufällig Karte in die Mitte
+    const int randomCardIndex = QRandomGenerator::global()->bounded(m_drawStack.size());
+    UnoCardBase *card = m_drawStack[randomCardIndex];
+    m_drawStack.removeAt(randomCardIndex);
+    m_lastPlayedCard = card;
+
+    m_stackOrDraw = false;
+    m_isClockwise = true;
+
+    const int randomPlayerIndex = QRandomGenerator::global()->bounded(m_players.size());
+    m_currentPlayerId = m_players.at(randomPlayerIndex)->getId();
 }
 
 void Gamefield::drawRandomCard(QWebSocket *client)
@@ -115,6 +136,14 @@ void Gamefield::drawRandomCard(QWebSocket *client, int countToDraw)
     m_countToDraw = 1;
 }
 
+void Gamefield::updatePlayersGamefields()
+{
+    for (Player *player : qAsConst(m_players))
+    {
+        player->getClient()->sendTextMessage(UPDATE_GAMEFIELD + ";" + getPlayerGamefield(player));
+    }
+}
+
 Player *Gamefield::getPlayer(QWebSocket *client)
 {
     for (Player *player : qAsConst(m_players))
@@ -125,4 +154,32 @@ Player *Gamefield::getPlayer(QWebSocket *client)
         }
     }
     return nullptr;
+}
+
+QString Gamefield::getPlayerGamefield(Player *player)
+{
+    QJsonObject playerGamefield;
+    QJsonArray enemies;
+    QJsonArray cards;
+
+    for (Player *enemie : qAsConst(m_players))
+    {
+        if(enemie != player)
+            enemies.append(QJsonObject{{"id", enemie->getId()}, {"name", enemie->getName()}, {"cardCount", enemie->getCards()->size()}});
+    }
+
+    for (UnoCardBase *card : qAsConst(*player->getCards()))
+    {
+        cards.append(card->toJsonObj());
+    }
+
+    playerGamefield.insert("enemies", enemies);
+    playerGamefield.insert("cards", cards);
+    playerGamefield.insert("lastPlayedCard", m_lastPlayedCard->toJsonObj());
+    playerGamefield.insert("currentPlayerId", m_currentPlayerId);
+    playerGamefield.insert("playerId", player->getId());
+    playerGamefield.insert("isClockwise", m_isClockwise);
+    playerGamefield.insert("stackOrDraw", m_stackOrDraw);
+
+    return QJsonDocument(playerGamefield).toJson(QJsonDocument::Compact);
 }

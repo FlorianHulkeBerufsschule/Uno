@@ -9,12 +9,16 @@ class Player : public QObject
 {
     Q_OBJECT
 public:
-    explicit Player(QWebSocket *client, QObject *parent = nullptr);
+    explicit Player(QWebSocket *client, int id, QString name, QObject *parent = nullptr);
     QWebSocket *getClient() const;
+    int getId();
+    QString getName();
     QList<UnoCardBase *> *getCards();
 
 private:
     QWebSocket *m_client;
+    int m_id;
+    QString m_name;
     QList<UnoCardBase *> m_cards;
 };
 

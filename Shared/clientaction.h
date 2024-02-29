@@ -5,7 +5,8 @@ enum class ClientAction
 {
     Invalid = 0,
     DisplayError,
-    UpdateQueue
+    UpdateQueue,
+    UpdateGamefield,
 };
 
 #endif // CLIENTACTION_H
