@@ -27,7 +27,7 @@ private Q_SLOTS:
 private:
     // ServerActions
     void joinQueue(QWebSocket *client, QJsonObject name);
-    void startGame();
+    void startGame(QWebSocket *client);
 
     // ClientActions
     void updateQueue();
