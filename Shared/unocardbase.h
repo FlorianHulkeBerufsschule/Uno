@@ -10,15 +10,18 @@ class SHARED_EXPORT UnoCardBase : public QObject
 public:
     explicit UnoCardBase(const int id, const QString color, QObject *parent = nullptr);
     // JSON
-    virtual void toJsonObj(QJsonObject &json) const = 0;
+    static UnoCardBase* fromJsonObj(QJsonObject object);
+    static UnoCardBase* fromJsonDoc(QJsonDocument document);
+    static UnoCardBase* fromJsonStr(QString string);
+    virtual QJsonObject toJsonObj() const = 0;
     QJsonDocument toJsonDoc() const;
     QString toJsonStr() const;
     // getter
     int getId() const;
     QString getColor() const;
 protected:
-    const int id;
-    const QString color;
+    const int m_id;
+    const QString m_color;
 
 signals:
 };
