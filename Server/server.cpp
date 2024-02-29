@@ -3,6 +3,7 @@
 #include "QtWebSockets/qwebsocket.h"
 #include "clientaction.h"
 #include "serveraction.h"
+#include "helper.h"
 #include <QDebug>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -10,6 +11,8 @@
 
 #define DISPLAY_ERROR QString::number(static_cast<int>(ClientAction::DisplayError))
 #define UPDATE_QUEUE QString::number(static_cast<int>(ClientAction::UpdateQueue))
+#define PLAY_CARD QString::number(static_cast<int>(ClientAction::PlayCard))
+#define DRAW_CARD QString::number(static_cast<int>(ClientAction::DrawCard))
 
 Server::Server(quint16 port, bool debug, QObject *parent)
     : QObject{parent},
@@ -63,8 +66,13 @@ void Server::processTextMessage(QString message)
     case ServerAction::StartGame:
         startGame();
         break;
+    case ServerAction::PlayCard:
+        break;
+    case ServerAction::DrawCard:
+        m_gamefield->drawRandomCard(client);
+        break;
     default:
-        displayError(client, "Parsed invalid ServerAction: " + QString::number(static_cast<int>(action)));
+        Helper::displayError(client, "Parsed invalid ServerAction: " + QString::number(static_cast<int>(action)));
         return;
     }
 }
@@ -107,7 +115,7 @@ void Server::joinQueue(QWebSocket *client, QJsonObject payload)
         }
         else
         {
-            displayError(client, "Queue is already full");
+            Helper::displayError(client, "Queue is already full");
         }
     }
 
@@ -118,12 +126,6 @@ void Server::startGame()
 {
     this->m_gamefield = new Gamefield(m_queue, m_debug);
     m_queue.clear();
-}
-
-void Server::displayError(QWebSocket *client, QString message)
-{
-    const QString error = QJsonDocument(QJsonObject{{"message", message}}).toJson(QJsonDocument::Compact);
-    client->sendTextMessage(DISPLAY_ERROR + ";" + error);
 }
 
 void Server::updateQueue()
