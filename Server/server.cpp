@@ -3,6 +3,7 @@
 #include "QtWebSockets/qwebsocket.h"
 #include "clientaction.h"
 #include "serveraction.h"
+#include "helper.h"
 #include <QDebug>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -64,7 +65,7 @@ void Server::processTextMessage(QString message)
         startGame();
         break;
     default:
-        displayError(client, "Parsed invalid ServerAction: " + QString::number(static_cast<int>(action)));
+        Helper::displayError(client, "Parsed invalid ServerAction: " + QString::number(static_cast<int>(action)));
         return;
     }
 }
@@ -107,7 +108,7 @@ void Server::joinQueue(QWebSocket *client, QJsonObject payload)
         }
         else
         {
-            displayError(client, "Queue is already full");
+            Helper::displayError(client, "Queue is already full");
         }
     }
 
@@ -118,12 +119,6 @@ void Server::startGame()
 {
     this->m_gamefield = new Gamefield(m_queue, m_debug);
     m_queue.clear();
-}
-
-void Server::displayError(QWebSocket *client, QString message)
-{
-    const QString error = QJsonDocument(QJsonObject{{"message", message}}).toJson(QJsonDocument::Compact);
-    client->sendTextMessage(DISPLAY_ERROR + ";" + error);
 }
 
 void Server::updateQueue()

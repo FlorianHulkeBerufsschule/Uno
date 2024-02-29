@@ -1,14 +1,19 @@
 #include "gamefield.h"
+#include "helper.h"
 #include "player.h"
 #include "unocard.h"
 #include "unospecialcard.h"
 #include <QMetaEnum>
+#include <QRandomGenerator>
+
+#define DISPLAY_ERROR QString::number(static_cast<int>(ClientAction::DisplayError))
 
 Gamefield::Gamefield(QList<QueueEntry *> queue, bool debug, QObject *parent)
     : QObject{parent}, m_debug(debug)
 {
     initDrawStack();
     initPlayers(queue);
+    initPlayerCards();
 }
 
 void Gamefield::initDrawStack()
@@ -64,4 +69,60 @@ void Gamefield::initPlayers(QList<QueueEntry *> queue)
 
     if (m_debug)
         qDebug() << "Starting game with" << m_players.length() << "players";
+}
+
+void Gamefield::initPlayerCards()
+{
+    for (Player *player : qAsConst(m_players))
+    {
+        drawRandomCard(player->getClient(), 7);
+
+        if(m_debug)
+            qDebug() << player << "has" << player->getCards()->size() << "cards";
+    }
+
+    if(m_debug)
+        qDebug() << m_drawStack.size() << "cards left on the drawstack";
+}
+
+void Gamefield::drawRandomCard(QWebSocket *client)
+{
+    drawRandomCard(client, m_countToDraw);
+}
+
+void Gamefield::drawRandomCard(QWebSocket *client, int countToDraw)
+{
+    Player *player = getPlayer(client);
+
+    for(int i = 0; i < countToDraw; i++)
+    {
+        if(m_drawStack.isEmpty())
+        {
+            Helper::displayError(player->getClient(), "Could not draw card: drawstack is empty");
+            break;
+        }
+
+        const int randomIndex = QRandomGenerator::global()->bounded(m_drawStack.size());
+        UnoCardBase *card = m_drawStack[randomIndex];
+
+        if (m_debug)
+            qDebug() << player << "draws" << card << "at index" << randomIndex;
+
+        m_drawStack.removeAt(randomIndex);
+        player->getCards()->append(card);
+    }
+
+    m_countToDraw = 1;
+}
+
+Player *Gamefield::getPlayer(QWebSocket *client)
+{
+    for (Player *player : qAsConst(m_players))
+    {
+        if(player->getClient() == client)
+        {
+            return player;
+        }
+    }
+    return nullptr;
 }

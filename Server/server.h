@@ -30,7 +30,6 @@ private:
     void startGame();
 
     // ClientActions
-    void displayError(QWebSocket *client, QString message);
     void updateQueue();
 
     QWebSocketServer *m_pWebSocketServer;

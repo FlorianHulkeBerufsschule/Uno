@@ -10,6 +10,8 @@ class Player : public QObject
     Q_OBJECT
 public:
     explicit Player(QWebSocket *client, QObject *parent = nullptr);
+    QWebSocket *getClient() const;
+    QList<UnoCardBase *> *getCards();
 
 private:
     QWebSocket *m_client;

@@ -8,6 +8,7 @@ CONFIG += c++17 cmdline
 
 SOURCES += \
     gamefield.cpp \
+    helper.cpp \
     main.cpp \
     player.cpp \
     queueentry.cpp \
@@ -15,6 +16,7 @@ SOURCES += \
 
 HEADERS += \
     gamefield.h \
+    helper.h \
     player.h \
     queueentry.h \
     server.h
