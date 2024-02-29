@@ -64,7 +64,7 @@ void Server::processTextMessage(QString message)
         joinQueue(client, payload);
         break;
     case ServerAction::StartGame:
-        startGame();
+        startGame(client);
         break;
     case ServerAction::PlayCard:
         break;
@@ -122,8 +122,11 @@ void Server::joinQueue(QWebSocket *client, QJsonObject payload)
     updateQueue();
 }
 
-void Server::startGame()
+void Server::startGame(QWebSocket *client)
 {
+    if(m_queue.size() < 2)
+        return Helper::displayError(client, "Not enough players!");
+
     this->m_gamefield = new Gamefield(m_queue, m_debug);
     m_queue.clear();
 }
