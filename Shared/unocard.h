@@ -7,7 +7,7 @@
 class SHARED_EXPORT UnoCard : public UnoCardBase
 {
 public:
-    explicit UnoCard(const int id, const QString color, const int value, QObject *parent = nullptr);
+    explicit UnoCard(const int id, const UnoCardColor color, const int value, QObject *parent = nullptr);
     static UnoCard* fromJsonObj(QJsonObject object);
     static UnoCard* fromJsonDoc(QJsonDocument document);
     static UnoCard* fromJsonStr(QString str);
