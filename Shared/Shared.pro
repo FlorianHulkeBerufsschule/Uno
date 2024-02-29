@@ -16,6 +16,8 @@ SOURCES += \
 
 HEADERS += \
     Shared_global.h \
+    clientaction.h \
+    serveraction.h \
     unocard.h \
     unocardbase.h \
     unospecialcard.h

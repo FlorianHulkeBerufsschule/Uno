@@ -1,20 +1,24 @@
 #include "server.h"
 #include "QtWebSockets/qwebsocketserver.h"
 #include "QtWebSockets/qwebsocket.h"
-#include "unocard.h"
-#include "unospecialcard.h"
+#include "clientaction.h"
+#include "serveraction.h"
 #include <QDebug>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#define DISPLAY_ERROR QString::number(static_cast<int>(ClientAction::DisplayError))
+#define UPDATE_QUEUE QString::number(static_cast<int>(ClientAction::UpdateQueue))
+
 Server::Server(quint16 port, bool debug, QObject *parent)
     : QObject{parent},
-    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Echo Server"), QWebSocketServer::NonSecureMode, this)),
+    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Uno Server"), QWebSocketServer::NonSecureMode, this)),
     m_debug(debug)
 {
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
         if (m_debug)
-            qDebug() << "Echoserver listening on port" << port;
+            qDebug() << "Unoserver listening on port" << port;
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
                 this, &Server::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &Server::closed);
@@ -39,17 +43,29 @@ void Server::onNewConnection()
 
 void Server::processTextMessage(QString message)
 {
-    const UnoCard *card = new UnoCard(1, "black", 7);
-    const QString jsonStr = card->toJsonStr();
-    const UnoCard *parsed = UnoCard::fromJsonStr(jsonStr);
-    qDebug() << "Parsed card:" << parsed->toJsonStr();
-
-    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (m_debug)
         qDebug() << "Message received:" << message;
-        qDebug() << "Sending JSON:" << jsonStr;
-    if (pClient) {
-        pClient->sendTextMessage(jsonStr);
+
+    QWebSocket *client = qobject_cast<QWebSocket *>(sender());
+    const QStringList params = message.split(';');
+    const ServerAction action = static_cast<ServerAction>(params[0].toInt());
+
+    // Payload initialisieren
+    QJsonObject payload;
+    if (params.size() >= 2) {
+        payload = QJsonDocument::fromJson(params[1].toUtf8()).object();
+    }
+
+    switch (action) {
+    case ServerAction::JoinQueue:
+        joinQueue(client, payload);
+        break;
+    case ServerAction::StartGame:
+        startGame();
+        break;
+    default:
+        displayError(client, "Parsed invalid ServerAction: " + QString::number(static_cast<int>(action)));
+        return;
     }
 }
 
@@ -61,5 +77,66 @@ void Server::socketDisconnected()
     if (pClient) {
         m_clients.removeAll(pClient);
         pClient->deleteLater();
+    }
+}
+
+void Server::joinQueue(QWebSocket *client, QJsonObject payload)
+{
+    QString name;
+    if (payload.contains("name") && payload["name"].isString())
+        name = payload["name"].toString();
+    else throw "Player joining queue has no name provided";
+
+    bool alreadyInQueue = false;
+    for (QueueEntry *entry : qAsConst(m_queue))
+    {
+        if(entry->getClient() == client)
+        {
+            //Found dublicate
+            entry->setName(name);
+            alreadyInQueue = true;
+            break;
+        }
+    }
+
+    if (!alreadyInQueue)
+    {
+        if(m_queue.length() < 4)
+        {
+            m_queue.append(new QueueEntry(client, name));
+        }
+        else
+        {
+            displayError(client, "Queue is already full");
+        }
+    }
+
+    updateQueue();
+}
+
+void Server::startGame()
+{
+    this->m_gamefield = new Gamefield(m_queue, m_debug);
+    m_queue.clear();
+}
+
+void Server::displayError(QWebSocket *client, QString message)
+{
+    const QString error = QJsonDocument(QJsonObject{{"message", message}}).toJson(QJsonDocument::Compact);
+    client->sendTextMessage(DISPLAY_ERROR + ";" + error);
+}
+
+void Server::updateQueue()
+{
+    QJsonArray queueArr;
+    for (const QueueEntry *entry : qAsConst(m_queue))
+    {
+        queueArr.append(entry->getName());
+    }
+    const QString queue = QJsonDocument(queueArr).toJson((QJsonDocument::Compact));
+
+    for(QWebSocket *client : qAsConst(m_clients))
+    {
+        client->sendTextMessage(UPDATE_QUEUE + ";" + queue);
     }
 }
