@@ -4,7 +4,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-UnoCardBase::UnoCardBase(const int id, const QString color, QObject *parent)
+UnoCardBase::UnoCardBase(const int id, const UnoCardColor color, QObject *parent)
     : QObject{parent}, m_id(id), m_color(color)
 {}
 
@@ -42,7 +42,7 @@ int UnoCardBase::getId() const
     return m_id;
 }
 
-QString UnoCardBase::getColor() const
+UnoCardColor UnoCardBase::getColor() const
 {
     return m_color;
 }

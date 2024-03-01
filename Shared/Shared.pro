@@ -20,6 +20,7 @@ HEADERS += \
     serveraction.h \
     unocard.h \
     unocardbase.h \
+    unocardcolor.h \
     unospecialcard.h
 
 # Default rules for deployment.
