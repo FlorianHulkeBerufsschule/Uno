@@ -2,21 +2,21 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-UnoSpecialCard::UnoSpecialCard(const int id, const QString color, const Type type, QObject *parent)
+UnoSpecialCard::UnoSpecialCard(const int id, const UnoCardColor color, const Type type, QObject *parent)
     : UnoCardBase{id, color, parent}, m_type(type)
 {}
 
 UnoSpecialCard *UnoSpecialCard::fromJsonObj(QJsonObject object) {
     int id;
-    QString color;
+    UnoCardColor color;
     Type type;
 
     if (object.contains("id") && object["id"].isDouble())
         id = object["id"].toInt();
     else throw "JSON object doesn't contain 'id'";
 
-    if (object.contains("color") && object["color"].isString())
-        color = object["color"].toString();
+    if (object.contains("color") && object["color"].isDouble())
+        color = static_cast<UnoCardColor>(object["color"].toInt());
     else throw "JSON object doesn't contain 'color'";
 
     if (object.contains("type") && object["type"].isDouble())
@@ -40,7 +40,7 @@ QJsonObject UnoSpecialCard::toJsonObj() const
 {
     QJsonObject json;
     json["id"] = m_id;
-    json["color"] = m_color;
+    json["color"] = static_cast<int>(m_color);
     json["type"] = m_type;
     return json;
 }

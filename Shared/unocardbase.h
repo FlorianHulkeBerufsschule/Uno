@@ -3,12 +3,13 @@
 
 #include <QObject>
 #include "Shared_global.h"
+#include "unocardcolor.h"
 
 class SHARED_EXPORT UnoCardBase : public QObject
 {
     Q_OBJECT
 public:
-    explicit UnoCardBase(const int id, const QString color, QObject *parent = nullptr);
+    explicit UnoCardBase(const int id, const UnoCardColor color, QObject *parent = nullptr);
     // JSON
     static UnoCardBase* fromJsonObj(QJsonObject object);
     static UnoCardBase* fromJsonDoc(QJsonDocument document);
@@ -18,10 +19,10 @@ public:
     QString toJsonStr() const;
     // getter
     int getId() const;
-    QString getColor() const;
+    UnoCardColor getColor() const;
 protected:
     const int m_id;
-    const QString m_color;
+    const UnoCardColor m_color;
 
 signals:
 };
