@@ -27,7 +27,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QPushButton *m_button;
+    QPushButton *m_startButton;
     Client *m_client;
     QString m_username;
 };
