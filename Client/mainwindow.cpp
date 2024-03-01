@@ -24,7 +24,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::handleButton()
 {
-    m_button->setText("Pissman");
+    //m_button->setText("kek");
     m_client->startGame();
 }
 
@@ -32,3 +32,14 @@ void MainWindow::setClient(Client *client)
 {
     m_client = client;
 }
+
+void MainWindow::on_lineEdit_textEdited(const QString &arg1)
+{
+    m_username = arg1;
+}
+
+void MainWindow::on_LoginButton_clicked()
+{
+    m_client->login(m_username);
+}
+

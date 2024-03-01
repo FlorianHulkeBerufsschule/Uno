@@ -34,8 +34,6 @@ void Client::startGame()
 
 void Client::login(QString name)
 {
-
-    // Todo: The following must be executed by the frontend, not on init
     const QString payload = QJsonDocument(QJsonObject{{"name", name}}).toJson(QJsonDocument::Compact);
 
     m_webSocket.sendTextMessage(JOIN_QUEUE + ";" + payload);
