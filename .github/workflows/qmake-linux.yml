@@ -1,0 +1,45 @@
+name: Build Linux
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  SOURCE_DIR: ${{ github.workspace }}
+  QT_VERSION: '5.15.2'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: ${{ env.QT_VERSION }}
+
+    - name: Install dependencies
+      run: sudo apt-get install -y build-essential
+
+    - name: Configure Subdirs Project
+      run: qmake Uno.pro
+
+    - name: Build Projects
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build
+        cd build
+        qmake ../Uno.pro
+        make
+
+    - name: Archive Build Artifacts
+      if: always()  # Archive auch im Fehlerfall
+      uses: actions/upload-artifact@v2
+      with:
+        name: uno-app-build
+        path: ${{ env.SOURCE_DIR }}/build
