@@ -18,14 +18,19 @@ private:
     void initDrawStack();
     void initPlayers(QList<QueueEntry *> clients);
     void initPlayerCards();
+    void initGamefield();
+    void updatePlayersGamefields();
     Player *getPlayer(QWebSocket *client);
+    QString getPlayerGamefield(Player *player);
 
     QList<UnoCardBase*> m_drawStack;
     UnoCardBase* m_lastPlayedCard;
     QList<Player *> m_players;
-    bool m_isClockwise = true;
-    bool m_debug;
+    int m_currentPlayerId;
     int m_countToDraw;
+    bool m_stackOrDraw;
+    bool m_isClockwise;
+    bool m_debug;
 
 signals:
 };

@@ -9,7 +9,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#define DISPLAY_ERROR QString::number(static_cast<int>(ClientAction::DisplayError))
 #define UPDATE_QUEUE QString::number(static_cast<int>(ClientAction::UpdateQueue))
 #define PLAY_CARD QString::number(static_cast<int>(ClientAction::PlayCard))
 #define DRAW_CARD QString::number(static_cast<int>(ClientAction::DrawCard))
