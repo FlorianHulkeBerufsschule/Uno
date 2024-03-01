@@ -24,13 +24,19 @@ void Client::onConnected()
     if (m_debug)
         qDebug() << "WebSocket connected";
     connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &Client::onTextMessageReceived);
+}
 
-    // Todo: The following must be executed by the frontend, not on init
-    const QString name = "Name";
+void Client::startGame()
+{
+    m_webSocket.sendTextMessage(START_GAME);
+
+}
+
+void Client::login(QString name)
+{
     const QString payload = QJsonDocument(QJsonObject{{"name", name}}).toJson(QJsonDocument::Compact);
 
     m_webSocket.sendTextMessage(JOIN_QUEUE + ";" + payload);
-    m_webSocket.sendTextMessage(START_GAME);
 }
 
 void Client::onTextMessageReceived(QString message)

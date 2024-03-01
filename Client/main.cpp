@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
-    w.show();
+    w.showMaximized();
 
     QCommandLineParser parser;
     parser.setApplicationDescription("QtWebSockets example: echoclient");
@@ -23,6 +23,8 @@ int main(int argc, char *argv[])
 
     Client client(QUrl(QStringLiteral("ws://localhost:8888")), debug);
     QObject::connect(&client, &Client::closed, &a, &QCoreApplication::quit);
+
+    w.setClient(&client);
 
     return a.exec();
 }

@@ -9,6 +9,8 @@ class Client : public QObject
     Q_OBJECT
 public:
     explicit Client(const QUrl &url, bool debug = false, QObject *parent = nullptr);
+    void startGame();
+    void login(QString name);
 
 Q_SIGNALS:
     void closed();
