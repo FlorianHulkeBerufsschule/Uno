@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_StartScreen.h"
+#include "client.cpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,4 +25,10 @@ MainWindow::~MainWindow()
 void MainWindow::handleButton()
 {
     m_button->setText("Pissman");
+    m_client->startGame();
+}
+
+void MainWindow::setClient(Client *client)
+{
+    m_client = client;
 }
