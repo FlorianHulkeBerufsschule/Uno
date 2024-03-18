@@ -14,6 +14,7 @@ public:
     explicit Gamefield(QList<QueueEntry *> queue, bool debug = false, QObject *parent = nullptr);
     void drawRandomCard(QWebSocket *client);
     void drawRandomCard(QWebSocket *client, int countToDraw);
+    bool isGameActive();
 private:
     void initDrawStack();
     void initPlayers(QList<QueueEntry *> clients);

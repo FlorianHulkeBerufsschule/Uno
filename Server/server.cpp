@@ -16,6 +16,7 @@
 Server::Server(quint16 port, bool debug, QObject *parent)
     : QObject{parent},
     m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Uno Server"), QWebSocketServer::NonSecureMode, this)),
+    m_gamefield(nullptr),
     m_debug(debug)
 {
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
@@ -125,6 +126,9 @@ void Server::startGame(QWebSocket *client)
 {
     if(m_queue.size() < 2)
         return Helper::displayError(client, "Not enough players!");
+
+    if(m_gamefield != nullptr && m_gamefield->isGameActive())
+        return Helper::displayError(client, "A game is already active!");
 
     this->m_gamefield = new Gamefield(m_queue, m_debug);
     m_queue.clear();
