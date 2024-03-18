@@ -183,3 +183,16 @@ QString Gamefield::getPlayerGamefield(Player *player)
 
     return QJsonDocument(playerGamefield).toJson(QJsonDocument::Compact);
 }
+
+bool Gamefield::isGameActive()
+{
+    int activePlayers = 0;
+    for (Player *player :qAsConst(m_players))
+    {
+        if(player->getCards()->length() > 0 && ++activePlayers > 1)
+        {
+            return true;
+        }
+    }
+    return false;
+}
