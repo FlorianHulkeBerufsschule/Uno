@@ -8,7 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setCentralWidget(new QueueView(m_client));
 }
 
 MainWindow::~MainWindow()
@@ -16,8 +15,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setClient(Client *client)
+void MainWindow::generateClient(QUrl url, bool debug)
 {
-    m_client = client;
+    m_client = new Client(url, debug);
+    setCentralWidget(new QueueView(m_client));
 }
+
+//void MainWindow::generateClient()
 

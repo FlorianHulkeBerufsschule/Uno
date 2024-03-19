@@ -17,7 +17,7 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    void setClient(Client *client);
+    void generateClient(QUrl url, bool debug);
     ~MainWindow();
 
 private slots:

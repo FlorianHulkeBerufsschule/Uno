@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "client.h"
-#include "startwindow.h"
-
 #include <QApplication>
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QCommandLineOption>
@@ -22,10 +20,7 @@ int main(int argc, char *argv[])
     parser.process(a);
     bool debug = parser.isSet(dbgOption);
 
-    Client client(QUrl(QStringLiteral("ws://localhost:8888")), debug);
-    QObject::connect(&client, &Client::closed, &a, &QCoreApplication::quit);
-
-    w.setClient(&client);
+    w.generateClient(QUrl(QStringLiteral("ws://localhost:8888")), debug);
 
     return a.exec();
 }
