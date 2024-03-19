@@ -119,7 +119,7 @@ void Server::joinQueue(QWebSocket *client, QJsonObject payload)
 
     if (!alreadyInQueue)
     {
-        if(m_queue.length() < 4)
+        if(m_queue.length() < 2)
         {
             m_queue.append(new QueueEntry(client, name));
         }
