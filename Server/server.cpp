@@ -9,10 +9,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#define UPDATE_QUEUE QString::number(static_cast<int>(ClientAction::UpdateQueue))
-#define PLAY_CARD QString::number(static_cast<int>(ClientAction::PlayCard))
-#define DRAW_CARD QString::number(static_cast<int>(ClientAction::DrawCard))
-
 Server::Server(quint16 port, bool debug, QObject *parent)
     : QObject{parent},
     m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Uno Server"), QWebSocketServer::NonSecureMode, this)),
@@ -44,20 +40,23 @@ void Server::onNewConnection()
     m_clients << pSocket;
 }
 
-void Server::processTextMessage(QString message)
+void Server::processTextMessage(QString messageStr)
 {
     if (m_debug)
-        qDebug() << "Message received:" << message;
+        qDebug() << "Message received:" << messageStr;
 
     QWebSocket *client = qobject_cast<QWebSocket *>(sender());
-    const QStringList params = message.split(';');
-    const ServerAction action = static_cast<ServerAction>(params[0].toInt());
+    QJsonObject message = QJsonDocument::fromJson(messageStr.toUtf8()).object();
 
-    // Payload initialisieren
+    ServerAction action;
+    if(message.contains("action") && message["action"].isDouble())
+        action = static_cast<ServerAction>(message["action"].toInt());
+    else
+        return Helper::sendError(client, "Either nor or invalid ServerAction");
+
     QJsonObject payload;
-    if (params.size() >= 2) {
-        payload = QJsonDocument::fromJson(params[1].toUtf8()).object();
-    }
+    if(message.contains("payload") && message["payload"].isObject())
+        payload = message["payload"].toObject();
 
     switch (action) {
     case ServerAction::JoinQueue:
@@ -72,7 +71,7 @@ void Server::processTextMessage(QString message)
         m_gamefield->drawRandomCard(client);
         break;
     default:
-        Helper::displayError(client, "Parsed invalid ServerAction: " + QString::number(static_cast<int>(action)));
+        Helper::sendError(client, "Parsed invalid ServerAction: " + QString::number(static_cast<int>(action)));
         return;
     }
 }
@@ -117,7 +116,7 @@ void Server::joinQueue(QWebSocket *client, QJsonObject payload)
         }
         else
         {
-            Helper::displayError(client, "Queue is already full");
+            Helper::sendError(client, "Queue is already full");
         }
     }
 
@@ -127,10 +126,10 @@ void Server::joinQueue(QWebSocket *client, QJsonObject payload)
 void Server::startGame(QWebSocket *client)
 {
     if(m_queue.size() < 2)
-        return Helper::displayError(client, "Not enough players!");
+        return Helper::sendError(client, "Not enough players!");
 
     if(m_gamefield != nullptr && m_gamefield->isGameActive())
-        return Helper::displayError(client, "A game is already active!");
+        return Helper::sendError(client, "A game is already active!");
 
     this->m_gamefield = new Gamefield(m_queue, m_debug);
     m_queue.clear();
@@ -143,10 +142,8 @@ void Server::updateQueue()
     {
         queueArr.append(entry->getName());
     }
-    const QString queue = QJsonDocument(queueArr).toJson((QJsonDocument::Compact));
 
-    for(QWebSocket *client : qAsConst(m_clients))
-    {
-        client->sendTextMessage(UPDATE_QUEUE + ";" + queue);
-    }
+    QJsonObject queue = QJsonObject{{"queue", queueArr}};
+
+    Helper::sendClientAction(m_clients, ClientAction::UpdateQueue, queue);
 }

@@ -119,7 +119,7 @@ void Gamefield::drawRandomCard(QWebSocket *client, int countToDraw)
     {
         if(m_drawStack.isEmpty())
         {
-            Helper::displayError(player->getClient(), "Could not draw card: drawstack is empty");
+            Helper::sendError(player->getClient(), "Could not draw card: drawstack is empty");
             break;
         }
 
@@ -140,7 +140,7 @@ void Gamefield::updatePlayersGamefields()
 {
     for (Player *player : qAsConst(m_players))
     {
-        player->getClient()->sendTextMessage(UPDATE_GAMEFIELD + ";" + getPlayerGamefield(player));
+        Helper::sendClientAction(player->getClient(), ClientAction::UpdateGamefield, getPlayerGamefield(player));
     }
 }
 
@@ -184,9 +184,8 @@ Player *Gamefield::nextPlayer()
     return m_players.at(nextIndex);
 }
 
-QString Gamefield::getPlayerGamefield(Player *player)
+QJsonObject Gamefield::getPlayerGamefield(Player *player)
 {
-    QJsonObject playerGamefield;
     QJsonArray enemies;
     QJsonArray cards;
 
@@ -201,15 +200,18 @@ QString Gamefield::getPlayerGamefield(Player *player)
         cards.append(card->toJsonObj());
     }
 
-    playerGamefield.insert("enemies", enemies);
-    playerGamefield.insert("cards", cards);
-    playerGamefield.insert("lastPlayedCard", m_lastPlayedCard->toJsonObj());
-    playerGamefield.insert("currentPlayerId", m_currentPlayerId);
-    playerGamefield.insert("playerId", player->getId());
-    playerGamefield.insert("isClockwise", m_isClockwise);
-    playerGamefield.insert("stackOrDraw", m_stackOrDraw);
+    QJsonObject playerGamefield
+    {
+        {"enemies", enemies},
+        {"cards", cards},
+        {"lastPlayedCard", m_lastPlayedCard->toJsonObj()},
+        {"currentPlayerId", m_currentPlayerId},
+        {"playerId", player->getId()},
+        {"isClockwise", m_isClockwise},
+        {"stackOrDraw", m_stackOrDraw}
+    };
 
-    return QJsonDocument(playerGamefield).toJson(QJsonDocument::Compact);
+    return playerGamefield;
 }
 
 void Gamefield::disconnectClient(QWebSocket *client)
