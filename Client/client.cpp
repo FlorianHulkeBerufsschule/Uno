@@ -26,22 +26,30 @@ void Client::onConnected()
     connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &Client::onTextMessageReceived);
 }
 
-void Client::startGame()
-{
-    m_webSocket.sendTextMessage(START_GAME);
-
-}
-
-void Client::login(QString name)
-{
-    const QString payload = QJsonDocument(QJsonObject{{"name", name}}).toJson(QJsonDocument::Compact);
-
-    m_webSocket.sendTextMessage(JOIN_QUEUE + ";" + payload);
-}
-
 void Client::onTextMessageReceived(QString message)
 {
     if (m_debug)
         qDebug() << "Message received:" << message;
     // m_webSocket.close();
 }
+
+void Client::sendServerAction(ServerAction action, QJsonObject payload)
+{
+    QJsonObject message
+    {
+        {"action", static_cast<int>(action)},
+        {"payload", payload},
+    };
+    m_webSocket.sendTextMessage(QJsonDocument(message).toJson(QJsonDocument::Compact));
+}
+
+void Client::startGame()
+{
+    sendServerAction(ServerAction::StartGame, QJsonObject{});
+}
+
+void Client::login(QString name)
+{
+    sendServerAction(ServerAction::JoinQueue, QJsonObject{{"name", name}});
+}
+
