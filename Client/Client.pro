@@ -10,16 +10,21 @@ CONFIG += c++17
 
 SOURCES += \
     client.cpp \
+    gameview.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    queueview.cpp
 
 HEADERS += \
     client.h \
-    mainwindow.h
+    gameview.h \
+    mainwindow.h \
+    queueview.h
 
 FORMS += \
-    StartScreen.ui \
-    mainwindow.ui
+    gameview.ui \
+    mainwindow.ui \
+    queueview.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

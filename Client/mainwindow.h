@@ -17,18 +17,14 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    void setClient(Client *client);
+    void generateClient(QUrl url, bool debug);
     ~MainWindow();
 
 private slots:
-    void handleButton();
-    void on_lineEdit_textEdited(const QString &arg1);
-    void on_LoginButton_clicked();
+    void showGameView();
 
 private:
     Ui::MainWindow *ui;
-    QPushButton *m_startButton;
     Client *m_client;
-    QString m_username;
 };
 #endif // MAINWINDOW_H

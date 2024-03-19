@@ -1,4 +1,5 @@
 #include "client.h"
+#include "clientaction.h"
 #include "qjsondocument.h"
 #include "qjsonobject.h"
 #include "serveraction.h"
@@ -26,11 +27,35 @@ void Client::onConnected()
     connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &Client::onTextMessageReceived);
 }
 
-void Client::onTextMessageReceived(QString message)
+void Client::onTextMessageReceived(QString messageStr)
 {
     if (m_debug)
-        qDebug() << "Message received:" << message;
-    // m_webSocket.close();
+        qDebug() << "Message received:" << messageStr;
+
+    QJsonObject message = QJsonDocument::fromJson(messageStr.toUtf8()).object();
+
+    ClientAction action;
+    if(message.contains("action") && message["action"].isDouble())
+        action = static_cast<ClientAction>(message["action"].toInt());
+    else
+        return throw "Either nor or invalid ClientAction";
+
+    QJsonObject payload;
+    if(message.contains("payload") && message["payload"].isObject())
+        payload = message["payload"].toObject();
+
+    switch (action) {
+    case ClientAction::DisplayError:
+        break;
+    case ClientAction::UpdateQueue:
+        break;
+    case ClientAction::UpdateGamefield:
+        emit showGameView();
+        break;
+    default:
+        throw "Recieved invalid ClientAction";
+        return;
+    }
 }
 
 void Client::sendServerAction(ServerAction action, QJsonObject payload)
