@@ -15,6 +15,7 @@ public:
 
 Q_SIGNALS:
     void closed();
+    void showGameView();
 
 private Q_SLOTS:
     void onConnected();

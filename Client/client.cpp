@@ -26,11 +26,12 @@ void Client::onConnected()
     connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &Client::onTextMessageReceived);
 }
 
-void Client::onTextMessageReceived(QString message)
+void Client::onTextMessageReceived(QString messageStr)
 {
     if (m_debug)
-        qDebug() << "Message received:" << message;
-    // m_webSocket.close();
+        qDebug() << "Message received:" << messageStr;
+
+    QJsonObject message = QJsonDocument::fromJson(messageStr.toUtf8()).object();
 }
 
 void Client::sendServerAction(ServerAction action, QJsonObject payload)
