@@ -1,10 +1,10 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "startwindow.h"
+#include "ui_StartScreen.h"
 #include "client.cpp"
 
-MainWindow::MainWindow(QWidget *parent)
+StartWindow::StartWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::StartWindow)
 {
     ui->setupUi(this);
 
@@ -14,31 +14,31 @@ MainWindow::MainWindow(QWidget *parent)
     m_startButton->setGeometry(QRect(QPoint(960, 520), QSize(200, 50)));
 
     // Connect button signal to appropriate slot
-    connect(m_startButton, &QPushButton::released, this, &MainWindow::handleButton);
+    connect(m_startButton, &QPushButton::released, this, &StartWindow::handleButton);
 }
 
-MainWindow::~MainWindow()
+StartWindow::~StartWindow()
 {
     delete ui;
 }
 
-void MainWindow::handleButton()
+void StartWindow::handleButton()
 {
     //m_button->setText("kek");
     m_client->startGame();
 }
 
-void MainWindow::setClient(Client *client)
+void StartWindow::setClient(Client *client)
 {
     m_client = client;
 }
 
-void MainWindow::on_lineEdit_textEdited(const QString &arg1)
+void StartWindow::on_lineEdit_textEdited(const QString &arg1)
 {
     m_username = arg1;
 }
 
-void MainWindow::on_LoginButton_clicked()
+void StartWindow::on_LoginButton_clicked()
 {
     m_client->login(m_username);
 }

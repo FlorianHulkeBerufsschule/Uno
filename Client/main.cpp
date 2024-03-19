@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "client.h"
+#include "startwindow.h"
 
 #include <QApplication>
 #include <QtCore/QCommandLineParser>

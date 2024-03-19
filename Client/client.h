@@ -12,6 +12,7 @@ public:
     explicit Client(const QUrl &url, bool debug = false, QObject *parent = nullptr);
     void startGame();
     void login(QString name);
+    void switchWindow(bool a);
 
 Q_SIGNALS:
     void closed();
