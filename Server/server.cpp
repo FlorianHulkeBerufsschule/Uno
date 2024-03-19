@@ -84,6 +84,12 @@ void Server::socketDisconnected()
     if (pClient) {
         if(m_gamefield)
             m_gamefield->disconnectClient(pClient);
+
+        for (QueueEntry *entry : qAsConst(m_queue))
+            if(entry->getClient() == pClient)
+                m_queue.removeAll(entry);
+        updateQueue();
+
         m_clients.removeAll(pClient);
         pClient->deleteLater();
     }
