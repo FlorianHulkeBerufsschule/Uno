@@ -25,7 +25,7 @@ private:
     Player *getPlayer(QWebSocket *client);
     Player *currentPlayer();
     Player *nextPlayer();
-    QString getPlayerGamefield(Player *player);
+    QJsonObject getPlayerGamefield(Player *player);
 
     QList<UnoCardBase*> m_drawStack;
     UnoCardBase* m_lastPlayedCard;

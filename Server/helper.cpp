@@ -9,8 +9,30 @@ Helper::Helper(QObject *parent)
     : QObject{parent}
 {}
 
-void Helper::displayError(QWebSocket *client, QString message)
+void Helper::sendError(QWebSocket *client, QString message)
 {
-    const QString error = QJsonDocument(QJsonObject{{"message", message}}).toJson(QJsonDocument::Compact);
-    client->sendTextMessage(DISPLAY_ERROR + ";" + error);
+    sendClientAction(client, ClientAction::DisplayError, QJsonObject{{"message", message}});
+}
+
+void Helper::sendClientAction(QWebSocket *client, ClientAction action, QJsonObject payload)
+{
+    QJsonObject message{
+        {"action", static_cast<int>(action)},
+        {"payload", payload}
+    };
+
+    client->sendTextMessage(QJsonDocument(message).toJson(QJsonDocument::Compact));
+}
+
+void Helper::sendClientAction(QList<QWebSocket *> clients, ClientAction action, QJsonObject payload)
+{
+    QJsonObject message{
+        {"action", static_cast<int>(action)},
+        {"payload", payload}
+    };
+
+    for (QWebSocket * client : clients)
+    {
+        client->sendTextMessage(QJsonDocument(message).toJson(QJsonDocument::Compact));
+    }
 }
