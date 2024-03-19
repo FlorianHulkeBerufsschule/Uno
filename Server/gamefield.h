@@ -14,6 +14,7 @@ public:
     explicit Gamefield(QList<QueueEntry *> queue, bool debug = false, QObject *parent = nullptr);
     void drawRandomCard(QWebSocket *client);
     void drawRandomCard(QWebSocket *client, int countToDraw);
+    void disconnectClient(QWebSocket *client);
     bool isGameActive();
 private:
     void initDrawStack();
@@ -22,6 +23,8 @@ private:
     void initGamefield();
     void updatePlayersGamefields();
     Player *getPlayer(QWebSocket *client);
+    Player *currentPlayer();
+    Player *nextPlayer();
     QString getPlayerGamefield(Player *player);
 
     QList<UnoCardBase*> m_drawStack;
