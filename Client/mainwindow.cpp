@@ -2,6 +2,7 @@
 #include "queueview.h"
 #include "ui_mainwindow.h"
 #include "client.cpp"
+#include "gameview.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -18,8 +19,11 @@ MainWindow::~MainWindow()
 void MainWindow::generateClient(QUrl url, bool debug)
 {
     m_client = new Client(url, debug);
+    connect(m_client, &Client::showGameView, this, &MainWindow::showGameView);
     setCentralWidget(new QueueView(m_client));
 }
 
-//void MainWindow::generateClient()
+void MainWindow::showGameView(){
+    setCentralWidget(new GameView(m_client));
+}
 

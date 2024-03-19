@@ -21,6 +21,7 @@ public:
     ~MainWindow();
 
 private slots:
+    void showGameView();
 
 private:
     Ui::MainWindow *ui;

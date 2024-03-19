@@ -30,6 +30,9 @@ private:
     Client *m_client;
     QString m_username;
     QPushButton *m_loginButton;
+
+signals:
+
 };
 
 #endif // QUEUEVIEW_H
