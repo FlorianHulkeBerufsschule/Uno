@@ -100,7 +100,10 @@ void Server::joinQueue(QWebSocket *client, QJsonObject payload)
     QString name;
     if (payload.contains("name") && payload["name"].isString())
         name = payload["name"].toString();
-    else throw "Player joining queue has no name provided";
+    else return Helper::sendError(client, "Player joining queue has no name provided");
+
+    if (name.length() < 5)
+        return Helper::sendError(client, "Player name must have at least 5 caracters");
 
     bool alreadyInQueue = false;
     for (QueueEntry *entry : qAsConst(m_queue))
