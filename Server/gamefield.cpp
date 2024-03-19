@@ -156,6 +156,34 @@ Player *Gamefield::getPlayer(QWebSocket *client)
     return nullptr;
 }
 
+Player *Gamefield::currentPlayer()
+{
+    for (Player *player : qAsConst(m_players))
+    {
+        if(player->getId() == m_currentPlayerId)
+        {
+            return player;
+        }
+    }
+    return nullptr;
+}
+
+Player *Gamefield::nextPlayer()
+{
+    int playersCount = m_players.count();
+    int currentPlayerIndex = m_players.indexOf(currentPlayer());
+
+    int nextIndex = m_isClockwise ? currentPlayerIndex + 1 : currentPlayerIndex - 1;
+
+    if(nextIndex < 0)
+        nextIndex = playersCount - 1;
+
+    if(nextIndex >= playersCount)
+        nextIndex = 0;
+
+    return m_players.at(nextIndex);
+}
+
 QString Gamefield::getPlayerGamefield(Player *player)
 {
     QJsonObject playerGamefield;
@@ -182,6 +210,25 @@ QString Gamefield::getPlayerGamefield(Player *player)
     playerGamefield.insert("stackOrDraw", m_stackOrDraw);
 
     return QJsonDocument(playerGamefield).toJson(QJsonDocument::Compact);
+}
+
+void Gamefield::disconnectClient(QWebSocket *client)
+{
+    Player *player = getPlayer(client);
+
+    // If disconnected client is no player, then do nothing
+    if (!player) return;
+
+    m_drawStack.append(*player->getCards());
+
+    if (m_currentPlayerId == player->getId())
+        m_currentPlayerId = nextPlayer()->getId();
+
+    m_players.removeAll(player);
+    updatePlayersGamefields();
+
+    if(m_debug)
+        qDebug() << "Player" << player->getName() << "disconnected";
 }
 
 bool Gamefield::isGameActive()

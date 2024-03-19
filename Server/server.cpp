@@ -83,6 +83,8 @@ void Server::socketDisconnected()
     if (m_debug)
         qDebug() << "socketDisconnected:" << pClient;
     if (pClient) {
+        if(m_gamefield)
+            m_gamefield->disconnectClient(pClient);
         m_clients.removeAll(pClient);
         pClient->deleteLater();
     }
