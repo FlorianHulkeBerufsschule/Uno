@@ -27,3 +27,13 @@ void MainWindow::showGameView(){
     setCentralWidget(new GameView(m_client));
 }
 
+void MainWindow::showError(QJsonObject &payload)
+{
+    if(payload.contains("message") && payload["message"].isString())
+    {
+        QString message = payload["message"].toString();
+        // Todo display the error
+    }
+    else throw "Couldn't show error, 'message' is not contained";
+}
+

@@ -22,6 +22,7 @@ public:
 
 private slots:
     void showGameView();
+    void showError(QJsonObject &payload);
 
 private:
     Ui::MainWindow *ui;
