@@ -95,6 +95,16 @@ void Server::socketDisconnected()
     }
 }
 
+QList<QWebSocket *> Server::getQueueClients()
+{
+    QList<QWebSocket *> clients;
+    for (QueueEntry *entry : qAsConst(m_queue))
+    {
+        clients.append(entry->getClient());
+    }
+    return clients;
+}
+
 void Server::joinQueue(QWebSocket *client, QJsonObject payload)
 {
     QString name;
@@ -140,6 +150,7 @@ void Server::startGame(QWebSocket *client)
     if(m_gamefield != nullptr && m_gamefield->isGameActive())
         return Helper::sendError(client, "A game is already active!");
 
+    Helper::sendClientAction(getQueueClients(), ClientAction::StartGame, {});
     this->m_gamefield = new Gamefield(m_queue, m_debug);
     m_queue.clear();
 }
