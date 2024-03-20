@@ -5,6 +5,7 @@ enum class ClientAction
 {
     Invalid = 0,
     DisplayError,
+    StartGame,
     UpdateQueue,
     UpdateGamefield,
 };

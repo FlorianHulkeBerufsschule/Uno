@@ -47,10 +47,12 @@ void Client::onTextMessageReceived(QString messageStr)
     switch (action) {
     case ClientAction::DisplayError:
         break;
+    case ClientAction::StartGame:
+        emit showGameView();
+        break;
     case ClientAction::UpdateQueue:
         break;
     case ClientAction::UpdateGamefield:
-        emit showGameView();
         break;
     default:
         throw "Recieved invalid ClientAction";

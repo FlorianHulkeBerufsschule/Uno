@@ -32,6 +32,7 @@ private:
     // ClientActions
     void updateQueue();
 
+    QList<QWebSocket *> getQueueClients();
     QWebSocketServer *m_pWebSocketServer;
     QList<QWebSocket *> m_clients;
     QList<QueueEntry *> m_queue;
