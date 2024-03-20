@@ -5,6 +5,7 @@
 #include "client.h"
 #include "enemie.h"
 #include "unocardbase.h"
+#include <QGraphicsItem>
 
 namespace Ui {
 class GameView;
@@ -20,6 +21,10 @@ public:
 
 private:
     void updateView(QJsonObject &payload);
+    void updateLastPlayedCard();
+    void updateCards();
+    void updateEnemies();
+    QColor unoCardColor2QColor(UnoCardColor color);
     QList<UnoCardBase *> m_cards;
     QList<Enemie *> m_enemies;
     int m_currentPlayerId;

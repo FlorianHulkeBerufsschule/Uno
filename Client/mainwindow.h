@@ -4,6 +4,7 @@
 #include "client.h"
 #include <QMainWindow>
 #include <QPushButton>
+#include <QGraphicsItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
