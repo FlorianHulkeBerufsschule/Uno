@@ -16,6 +16,7 @@ public:
 Q_SIGNALS:
     void closed();
     void showGameView();
+    void updateGameView(QJsonObject &payload);
 
 private Q_SLOTS:
     void onConnected();

@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     client.cpp \
+    enemie.cpp \
     gameview.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
 
 HEADERS += \
     client.h \
+    enemie.h \
     gameview.h \
     mainwindow.h \
     queueview.h
