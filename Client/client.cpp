@@ -53,6 +53,7 @@ void Client::onTextMessageReceived(QString messageStr)
     case ClientAction::UpdateQueue:
         break;
     case ClientAction::UpdateGamefield:
+        emit updateGameView(payload);
         break;
     default:
         throw "Recieved invalid ClientAction";
