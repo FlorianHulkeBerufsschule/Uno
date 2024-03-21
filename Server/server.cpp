@@ -38,6 +38,7 @@ void Server::onNewConnection()
     connect(pSocket, &QWebSocket::disconnected, this, &Server::socketDisconnected);
 
     m_clients << pSocket;
+    updateQueue();
 }
 
 void Server::processTextMessage(QString messageStr)
@@ -127,9 +128,11 @@ void Server::joinQueue(QWebSocket *client, QJsonObject payload)
         }
     }
 
+    qDebug() << alreadyInQueue;
+
     if (!alreadyInQueue)
     {
-        if(m_queue.length() < 2)
+        if(m_queue.count() < 4)
         {
             m_queue.append(new QueueEntry(client, name));
         }
