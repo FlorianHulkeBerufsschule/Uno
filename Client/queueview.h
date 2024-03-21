@@ -4,6 +4,7 @@
 #include "client.h"
 #include <QWidget>
 #include <QPushButton>
+#include <QStringListModel>
 
 namespace Ui {
 class QueueView;
@@ -25,11 +26,15 @@ private slots:
 
     void on_StartButton_clicked();
 
+    void updatePlayerQueue(QJsonObject &payload);
+
 private:
     Ui::QueueView *ui;
     Client *m_client;
     QString m_username;
     QPushButton *m_loginButton;
+    QList<QString> m_queue;
+    QStringListModel *queueModel;
 
 signals:
 
