@@ -46,6 +46,7 @@ void Client::onTextMessageReceived(QString messageStr)
 
     switch (action) {
     case ClientAction::DisplayError:
+        emit showError(payload);
         break;
     case ClientAction::StartGame:
         emit showGameView();

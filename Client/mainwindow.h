@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QGraphicsItem>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -23,6 +24,7 @@ public:
 
 private slots:
     void showGameView();
+    void showError(QJsonObject &payload);
 
 private:
     Ui::MainWindow *ui;
