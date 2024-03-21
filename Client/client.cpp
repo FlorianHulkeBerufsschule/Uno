@@ -52,6 +52,7 @@ void Client::onTextMessageReceived(QString messageStr)
         emit showGameView();
         break;
     case ClientAction::UpdateQueue:
+        emit updatePlayerQueue(payload);
         break;
     case ClientAction::UpdateGamefield:
         emit updateGameView(payload);

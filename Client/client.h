@@ -18,6 +18,7 @@ Q_SIGNALS:
     void showGameView();
     void updateGameView(QJsonObject &payload);
     void showError(QJsonObject &payload);
+    void updatePlayerQueue(QJsonObject &payload);
 
 private Q_SLOTS:
     void onConnected();
