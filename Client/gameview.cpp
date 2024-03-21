@@ -102,6 +102,16 @@ void GameView::updateLastPlayedCard()
     ui->LastPlayed->setScene(scene);
 }
 
+void GameView::updateCards()
+{
+    // TODO
+}
+
+void GameView::updateEnemies()
+{
+    // TODO
+}
+
 QColor GameView::unoCardColor2QColor(UnoCardColor color)
 {
     switch(color)
