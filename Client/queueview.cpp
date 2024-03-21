@@ -16,7 +16,7 @@ QueueView::QueueView(Client *client, QWidget *parent)
 
     connect(m_client, &Client::updatePlayerQueue, this, &QueueView::updatePlayerQueue);
 
-    model = new QStringListModel(this);
+    queueModel = new QStringListModel(this);
 }
 
 QueueView::~QueueView()
@@ -50,8 +50,8 @@ void QueueView::updatePlayerQueue(QJsonObject &payload)
         {
             m_queue.append(queue.at(i).toString());
         }
-        model->setStringList(m_queue);
-        ui->PlayerQueue->setModel(model);
+        queueModel->setStringList(m_queue);
+        ui->PlayerQueue->setModel(queueModel);
     }
 
 }
