@@ -34,7 +34,7 @@ private:
     QString m_username;
     QPushButton *m_loginButton;
     QList<QString> m_queue;
-    QStringListModel *model;
+    QStringListModel *queueModel;
 
 signals:
 
