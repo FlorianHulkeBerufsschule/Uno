@@ -95,7 +95,49 @@ void GameView::updateCards()
 
 void GameView::updateEnemies()
 {
-    // TODO
+    int currentEnemyID = m_playerId + 1;
+    int itteration = 0;
+    for (Enemie *enemy : qAsConst(m_enemies))
+    {
+        itteration++;
+        if(currentEnemyID > (m_enemies.count() + 1))
+        {
+            currentEnemyID = 1;
+        }
+
+        QGraphicsScene *scene = new QGraphicsScene(this);
+        QGraphicsTextItem *textItem = nullptr;
+        if(itteration <= m_enemies.count())
+        {
+            scene->setBackgroundBrush(QColor(0, 0, 0));
+            textItem = scene->addText("UNO");
+            textItem->setDefaultTextColor(QColor(255, 255, 255));
+        }
+        textItem->setPos(0, 0);
+        textItem->setZValue(1);
+        QFont font = textItem->font();
+        font.setPointSize(20);
+        textItem->setFont(font);
+
+        switch(itteration)
+        {
+        case 1:
+            ui->Gegner1->setScene(scene);
+            ui->labelGegner1->setText(enemy->getName() + ": " + QString::number(enemy->getCardCount()));
+            break;
+        case 2:
+            ui->Gegner2->setScene(scene);
+            if(itteration <= m_enemies.count())
+                ui->labelGegner2->setText(enemy->getName() + ": " + QString::number(enemy->getCardCount()));
+            break;
+        case 3:
+            ui->Gegner3->setScene(scene);
+            if(itteration <= m_enemies.count())
+                ui->labelGegner3->setText(enemy->getName() + ": " + QString::number(enemy->getCardCount()));
+            break;
+        }
+        currentEnemyID = currentEnemyID +1;
+    }
 }
 
 QColor GameView::unoCardColor2QColor(UnoCardColor color)

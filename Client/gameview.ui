@@ -46,6 +46,11 @@
      <height>1080</height>
     </size>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>20</pointsize>
+    </font>
+   </property>
    <widget class="QGraphicsView" name="Gegner3">
     <property name="geometry">
      <rect>
@@ -154,6 +159,69 @@
       <width>100</width>
       <height>180</height>
      </size>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelGegner1">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>455</y>
+      <width>180</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelGegner2">
+    <property name="geometry">
+     <rect>
+      <x>970</x>
+      <y>190</y>
+      <width>180</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelGegner3">
+    <property name="geometry">
+     <rect>
+      <x>1720</x>
+      <y>450</y>
+      <width>180</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
