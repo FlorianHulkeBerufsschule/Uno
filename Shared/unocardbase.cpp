@@ -37,12 +37,12 @@ QString UnoCardBase::toJsonStr() const
     return toJsonDoc().toJson(QJsonDocument::Compact);
 }
 
-int UnoCardBase::getId() const
+int UnoCardBase::getId()
 {
     return m_id;
 }
 
-UnoCardColor UnoCardBase::getColor() const
+UnoCardColor UnoCardBase::getColor()
 {
     return m_color;
 }

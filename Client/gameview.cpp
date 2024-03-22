@@ -12,29 +12,15 @@ GameView::GameView(Client *client, QWidget *parent)
     ui->setupUi(this);
     connect(m_client, &Client::updateGameView, this, &GameView::updateView);
 
-
-
-
-    //LAST CARD PLAYED COLOR
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    scene->setBackgroundBrush(QColor(255, 0, 0, 255));
-    QGraphicsTextItem *textItem = scene->addText("+2");
-    textItem->setDefaultTextColor(QColor(255, 255, 255));
-    textItem->setPos(0, 0);
-    textItem->setZValue(1);
-    QFont font = textItem->font();
-    font.setPointSize(30);
-    textItem->setFont(font);
-    ui->LastPlayed->setScene(scene);
-
     //DRAW CARD COLOR
     QGraphicsScene *s = new QGraphicsScene(this);
-    s->setBackgroundBrush(QColor(0, 255, 0, 255));
-    QGraphicsTextItem *t = s->addText("+2");
+    s->setBackgroundBrush(QColor(0, 0, 0, 255));
+    QGraphicsTextItem *t = s->addText("UNO");
     t->setDefaultTextColor(QColor(255, 255, 255));
     t->setPos(0, 0);
     t->setZValue(1);
-    font.setPointSize(30);
+    QFont font = t->font();
+    font.setPointSize(20);
     t->setFont(font);
     ui->drawCards->setScene(s);
 }
@@ -92,7 +78,7 @@ void GameView::updateLastPlayedCard()
     //LAST CARD PLAYED COLOR
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setBackgroundBrush(unoCardColor2QColor(m_lastPlayedCard->getColor()));
-    QGraphicsTextItem *textItem = scene->addText("+2");
+    QGraphicsTextItem *textItem = scene->addText(getCardText(m_lastPlayedCard));
     textItem->setDefaultTextColor(QColor(255, 255, 255));
     textItem->setPos(0, 0);
     textItem->setZValue(1);
@@ -130,4 +116,33 @@ QColor GameView::unoCardColor2QColor(UnoCardColor color)
     default:
         throw "Invalid color";
     }
+}
+
+QString GameView::getCardText(UnoCardBase *card)
+{
+    if(UnoCard *unoCard = dynamic_cast<UnoCard*>(card))
+    {
+        return QString::number( unoCard->getValue());
+    }
+
+    if(UnoSpecialCard *specialCard = dynamic_cast<UnoSpecialCard*>(card))
+    {
+        auto type = specialCard->getType();
+        switch (type)
+        {
+        case UnoSpecialCard::DrawFour:
+            return "+4";
+        case UnoSpecialCard::DrawTwo:
+            return "+2";
+        case UnoSpecialCard::Skip:
+            return "⌀";
+        case UnoSpecialCard::Reverse:
+            return "↻";
+        case UnoSpecialCard::Wildcard:
+            return "⁛";
+        default:
+            return nullptr;
+        }
+    }
+    return nullptr;
 }
