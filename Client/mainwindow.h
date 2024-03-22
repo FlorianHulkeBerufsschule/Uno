@@ -4,6 +4,7 @@
 #include "client.h"
 #include <QMainWindow>
 #include <QPushButton>
+#include <QGraphicsItem>
 #include <QMessageBox>
 
 QT_BEGIN_NAMESPACE

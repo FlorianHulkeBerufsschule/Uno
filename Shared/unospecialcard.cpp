@@ -1,3 +1,4 @@
+
 #include "unospecialcard.h"
 #include <QJsonObject>
 #include <QJsonDocument>

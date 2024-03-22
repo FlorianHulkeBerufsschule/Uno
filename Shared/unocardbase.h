@@ -18,11 +18,11 @@ public:
     QJsonDocument toJsonDoc() const;
     QString toJsonStr() const;
     // getter
-    int getId() const;
-    UnoCardColor getColor() const;
+    int getId();
+    UnoCardColor getColor();
 protected:
-    const int m_id;
-    const UnoCardColor m_color;
+    int m_id;
+    UnoCardColor m_color;
 
 signals:
 };
