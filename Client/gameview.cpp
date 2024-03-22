@@ -95,16 +95,16 @@ void GameView::updateCards()
 
 void GameView::updateEnemies()
 {
-    int currentEnemyID = m_playerId + 1;
-    int itteration = 0;
-    for (Enemie *enemy : qAsConst(m_enemies))
+    ui->labelGegner1->setText("");
+    ui->labelGegner2->setText("");
+    ui->labelGegner3->setText("");
+    int currentEnemyIndex = m_playerId - 1;
+    for (int itteration = 1; itteration <= 3; itteration++)
     {
-        itteration++;
-        if(currentEnemyID > (m_enemies.count() + 1))
+        if(currentEnemyIndex >= 3)
         {
-            currentEnemyID = 1;
+            currentEnemyIndex = 0;
         }
-
         QGraphicsScene *scene = new QGraphicsScene(this);
         QGraphicsTextItem *textItem = nullptr;
         if(itteration <= m_enemies.count())
@@ -112,6 +112,12 @@ void GameView::updateEnemies()
             scene->setBackgroundBrush(QColor(0, 0, 0));
             textItem = scene->addText("UNO");
             textItem->setDefaultTextColor(QColor(255, 255, 255));
+        }
+        else
+        {
+            scene->setBackgroundBrush(QColor(255, 255, 255));
+            textItem = scene->addText("");
+            textItem->setDefaultTextColor(QColor(0, 0, 0));
         }
         textItem->setPos(0, 0);
         textItem->setZValue(1);
@@ -123,20 +129,20 @@ void GameView::updateEnemies()
         {
         case 1:
             ui->Gegner1->setScene(scene);
-            ui->labelGegner1->setText(enemy->getName() + ": " + QString::number(enemy->getCardCount()));
+            ui->labelGegner1->setText(m_enemies.at(currentEnemyIndex)->getName() + ": " + QString::number(m_enemies.at(currentEnemyIndex)->getCardCount()));
             break;
         case 2:
             ui->Gegner2->setScene(scene);
             if(itteration <= m_enemies.count())
-                ui->labelGegner2->setText(enemy->getName() + ": " + QString::number(enemy->getCardCount()));
+                ui->labelGegner2->setText(m_enemies.at(currentEnemyIndex)->getName() + ": " + QString::number(m_enemies.at(currentEnemyIndex)->getCardCount()));
             break;
         case 3:
             ui->Gegner3->setScene(scene);
             if(itteration <= m_enemies.count())
-                ui->labelGegner3->setText(enemy->getName() + ": " + QString::number(enemy->getCardCount()));
+                ui->labelGegner3->setText(m_enemies.at(currentEnemyIndex)->getName() + ": " + QString::number(m_enemies.at(currentEnemyIndex)->getCardCount()));
             break;
         }
-        currentEnemyID = currentEnemyID +1;
+        currentEnemyIndex++;
     }
 }
 
